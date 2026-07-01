@@ -3,4 +3,5 @@
 	url = git@github.com:mist-interactive/memoir-3167.git
 [submodule "backend"]
 	path = backend
-	url = ../backend.git
+	url = git@github.com:mist-interactive/backend.git
+
