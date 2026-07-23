@@ -1,0 +1,32 @@
+# Caddy automatically handles TLS certificates for this domain/host.
+# "localhost" gets a locally-trusted self-signed cert for dev;
+# swap this for real domain (e.g. game.example.com) in production —
+# Caddy will then request a real Let's Encrypt cert automatically.
+
+localhost {
+
+    # Default route: anything not matched below goes to the frontend.
+    # Serves the static site or Godot HTML5 export.
+    # "frontend" here is the Docker service name from frontend/docker-compose.yml —
+    # Caddy resolves it via Docker's internal DNS.
+
+    handle {
+        reverse_proxy frontend:8080
+    }
+
+    # Requests to /api/* go to the backend service (auth, matchmaking, etc).
+    # reverse_proxy forwards the request as-is and returns the response.
+
+    handle /api/* {
+        reverse_proxy backend:3000
+    }
+
+    # Requests to /ws/* go to the Godot headless server.
+    # Caddy detects the "Upgrade: websocket" header automatically and
+    # proxies the WebSocket connection — no special config needed here,
+    # reverse_proxy handles both plain HTTP and WS the same way.
+
+    handle /ws/* {
+        reverse_proxy memoir-3167:9000
+    }
+}

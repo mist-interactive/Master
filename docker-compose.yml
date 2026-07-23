@@ -1,0 +1,24 @@
+include:
+  - frontend/docker-compose.yml
+  - backend/docker-compose.yml
+  - memoir-3167/docker-compose.yml
+
+services:
+  caddy:
+    image: caddy:2
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    command: caddy run --config /etc/caddyfile
+    depends_on:
+      - frontend
+      - backend
+      - memoir-3167
+
+volumes:
+  caddy_data:
+  caddy_config:
