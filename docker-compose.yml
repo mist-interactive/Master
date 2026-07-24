@@ -1,9 +1,15 @@
 include:
-  - frontend/docker-compose.yml
   - backend/docker-compose.yml
   - memoir-3167/docker-compose.yml
 
 services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    expose:
+      - "8080"
+
   caddy:
     image: caddy:2
     ports:
