@@ -3,14 +3,14 @@
 # swap this for real domain (e.g. game.example.com) in production —
 # Caddy will then request a real Let's Encrypt cert automatically.
 
-localhost {
+localhost:8443 {
 
     # Default route: anything not matched below goes to the frontend.
     # Serves the static site or Godot HTML5 export.
     # "frontend" here is the Docker service name from frontend/docker-compose.yml —
     # Caddy resolves it via Docker's internal DNS.
 
-    handle {
+    handle /* {
         reverse_proxy frontend:5173
     }
 
@@ -26,7 +26,7 @@ localhost {
     # proxies the WebSocket connection — no special config needed here,
     # reverse_proxy handles both plain HTTP and WS the same way.
 
-    handle /ws/* {
-        reverse_proxy memoir-3167:9000
-    }
+    # handle /ws/* {
+    #     reverse_proxy memoir-3167:9000
+    # }
 }

@@ -6,6 +6,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    networks:
+      - frontend_network
     expose:
       - "5173"
 
@@ -15,13 +17,11 @@ services:
   #     dockerfile: Dockerfile
   #   expose:
   #     - "8080"
-  #   volumes:
-  #     - caddy_data:/data
 
   caddy:
     image: caddy:2
     ports:
-      - "8000:80"
+      # - "8000:80"
       - "8443:8443"
     volumes:
       - ./Caddyfile:/etc/caddyfile
@@ -32,6 +32,18 @@ services:
       - frontend
       - backend
       # - memoir-3167
+    networks:
+      - frontend_network
+      - backend_network
+
+
+networks:
+  frontend_network:
+    name: frontend_network
+    driver: bridge
+  backend_network:
+    name: backend_network
+    driver: bridge
 
 volumes:
   caddy_data:
