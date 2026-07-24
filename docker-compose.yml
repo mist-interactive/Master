@@ -11,12 +11,12 @@ services:
     expose:
       - "5173"
 
-  # memoir-3167:
-  #   build:
-  #     context: ./memoir-3167
-  #     dockerfile: Dockerfile
-  #   expose:
-  #     - "8080"
+  memoir-3167:
+    build:
+      context: ./memoir-3167
+      dockerfile: Dockerfile
+    expose:
+      - "8080"
 
   caddy:
     image: caddy:2
@@ -31,7 +31,7 @@ services:
     depends_on:
       - frontend
       - backend
-      # - memoir-3167
+      - memoir-3167
     networks:
       - frontend_network
       - backend_network
