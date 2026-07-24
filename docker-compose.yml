@@ -16,12 +16,14 @@ services:
       context: ./memoir-3167
       dockerfile: Dockerfile
     expose:
-      - "8080"
+      - "6669"
+    networks:
+      - backend_network
 
   caddy:
     image: caddy:2
     ports:
-      # - "8000:80"
+      - "80:80"
       - "8443:8443"
     volumes:
       - ./Caddyfile:/etc/caddyfile

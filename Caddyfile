@@ -20,13 +20,14 @@ localhost:8443 {
     handle /api/* {
         reverse_proxy backend:8080
     }
+}
 
+localhost:80 {
     # Requests to /ws/* go to the Godot headless server.
     # Caddy detects the "Upgrade: websocket" header automatically and
     # proxies the WebSocket connection — no special config needed here,
     # reverse_proxy handles both plain HTTP and WS the same way.
-
     handle /ws/* {
-        reverse_proxy memoir-3167:9000
+        reverse_proxy memoir-3167:6669
     }
 }
