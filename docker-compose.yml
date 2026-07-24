@@ -1,6 +1,5 @@
 include:
   - backend/docker-compose.yml
-  - memoir-3167/docker-compose.yml
 
 services:
   frontend:
@@ -8,13 +7,22 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     expose:
-      - "8080"
+      - "5173"
+
+  # memoir-3167:
+  #   build:
+  #     context: ./memoir-3167
+  #     dockerfile: Dockerfile
+  #   expose:
+  #     - "8080"
+  #   volumes:
+  #     - caddy_data:/data
 
   caddy:
     image: caddy:2
     ports:
-      - "80:80"
-      - "443:443"
+      - "8000:80"
+      - "8443:8443"
     volumes:
       - ./Caddyfile:/etc/caddyfile
       - caddy_data:/data
@@ -23,7 +31,7 @@ services:
     depends_on:
       - frontend
       - backend
-      - memoir-3167
+      # - memoir-3167
 
 volumes:
   caddy_data:

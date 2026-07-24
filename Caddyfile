@@ -11,14 +11,14 @@ localhost {
     # Caddy resolves it via Docker's internal DNS.
 
     handle {
-        reverse_proxy frontend:8080
+        reverse_proxy frontend:5173
     }
 
     # Requests to /api/* go to the backend service (auth, matchmaking, etc).
     # reverse_proxy forwards the request as-is and returns the response.
 
     handle /api/* {
-        reverse_proxy backend:3000
+        reverse_proxy backend:8080
     }
 
     # Requests to /ws/* go to the Godot headless server.
