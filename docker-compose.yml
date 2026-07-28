@@ -6,6 +6,9 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app 
+      - /app/node_modules
     networks:
       - frontend_network
     expose:
