@@ -1,27 +1,31 @@
 .PHONY: all build up down stop start clean fclean re status logs
 
+COMPOSE = docker compose \
+		-f docker-compose.yml \
+		-f backend/docker-compose.yml \
+
 all: build
 
 build:
-	@docker-compose build
+	@$(COMPOSE) build
 
 up:
-	@docker-compose up -d
+	@$(COMPOSE) up -d
 
 down:
-	@docker-compose down --remove-orphans
+	@$(COMPOSE) down --remove-orphans
 
 stop:
-	@docker-compose stop
+	@$(COMPOSE) stop
 
 start:
-	@docker-compose start
+	@$(COMPOSE) start
 
 clean:
-	@docker-compose down --remove-orphans
+	@$(COMPOSE) down --remove-orphans
 
 fclean: clean
-	@docker-compose down -v --rmi all --remove-orphans
+	@$(COMPOSE) down -v --rmi all --remove-orphans
 
 re: down clean all
 
@@ -30,10 +34,10 @@ KNOWN_TARGETS := all up down stop start clean fclean re status logs
 SERVICES := $(filter-out $(KNOWN_TARGETS),$(MAKECMDGOALS))
 
 status:
-	@docker-compose ps $(SERVICES)
+	@$(COMPOSE) ps $(SERVICES)
 
 logs:
-	@docker-compose logs -f --tail=200 $(SERVICES)
+	@$(COMPOSE) logs -f --tail=200 $(SERVICES)
 
 # No-op so extra words don't become "missing targets"
 %:
