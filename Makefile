@@ -1,11 +1,12 @@
 .PHONY: all build up down stop start clean fclean re status logs
 
-all: build
+all: up
 
 build:
-	@docker-compose build
+	@docker-compose build base go-server caddy
+	@docker-compose build frontend memoir-3167
 
-up:
+up: build
 	@docker-compose up -d
 
 down:
