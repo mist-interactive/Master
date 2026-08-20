@@ -9,7 +9,26 @@ on:
     branches:
       - development
 
+  repository_dispatch:
+    types:
+      - submodule_updated
+
   workflow_dispatch:
+    inputs:
+      backend_sha:
+        description: "Optional backend commit SHA"
+        required: false
+        type: string
+
+      frontend_sha:
+        description: "Optional frontend commit SHA"
+        required: false
+        type: string
+
+      memoir_sha:
+        description: "Optional memoir-3167 commit SHA"
+        required: false
+        type: string
 
 jobs:
   integration:
@@ -17,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Master
         uses: actions/checkout@v4
         with:
           submodules: recursive
@@ -25,24 +44,87 @@ jobs:
 
       - name: Show repository information
         run: |
-          echo "Master repository:"
+          echo "Master:"
           git log -1 --oneline
 
           echo ""
           echo "Submodules:"
           git submodule status
 
-      - name: Test submodules
+      - name: Override submodule versions
+        if: github.event_name == 'repository_dispatch'
         run: |
+          set -e
+
+          if [ -n "${{ github.event.client_payload.backend_sha }}" ]; then
+            git -C backend fetch origin
+            git -C backend checkout "${{ github.event.client_payload.backend_sha }}"
+          fi
+
+          if [ -n "${{ github.event.client_payload.frontend_sha }}" ]; then
+            git -C frontend fetch origin
+            git -C frontend checkout "${{ github.event.client_payload.frontend_sha }}"
+          fi
+
+          if [ -n "${{ github.event.client_payload.memoir_sha }}" ]; then
+            git -C memoir-3167 fetch origin
+            git -C memoir-3167 checkout "${{ github.event.client_payload.memoir_sha }}"
+          fi
+
+      - name: Show versions under test
+        run: |
+          echo "Master:"
+          git log -1 --oneline
+
+          echo ""
           echo "Backend:"
           git -C backend log -1 --oneline
 
+          echo ""
           echo "Frontend:"
           git -C frontend log -1 --oneline
 
-          echo "memoir-3167:"
+          echo ""
+          echo "Memoir:"
           git -C memoir-3167 log -1 --oneline
 
-      - name: Integration test
+      # ----------------------------------------------------
+      # Unit tests
+      # ----------------------------------------------------
+
+      - name: Backend unit tests
+        working-directory: backend
+        run: ./run-tests.sh
+      
+      - name: Frontend unit tests
+        working-directory: frontend
+        run: ./run-tests.sh
+      
+      - name: Godot tests
+        working-directory: memoir-3167
+        run: ./run-tests.sh
+      
+      - name: Start stack
+        run: docker compose up -d --build
+      
+      - name: Integration tests
+        run: ./tests/integration/run.sh
+
+      - name: Wait for services
         run: |
-          echo "Integration test passed!"
+          # TODO
+          #
+          # Example:
+          # curl --fail http://localhost:8080/health
+          # curl --fail http://localhost:3000
+
+      # ----------------------------------------------------
+      # Cleanup
+      # ----------------------------------------------------
+
+      - name: Shutdown integration environment
+        if: always()
+        run: |
+          # TODO
+          #
+          # docker compose down -v
