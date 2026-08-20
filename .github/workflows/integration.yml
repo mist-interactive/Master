@@ -40,8 +40,8 @@ jobs:
           echo "Frontend:"
           git -C frontend log -1 --oneline
 
-          echo "Godot:"
-          git -C godot log -1 --oneline
+          echo "memoir-3167:"
+          git -C memoir-3167 log -1 --oneline
 
       - name: Integration test
         run: |
