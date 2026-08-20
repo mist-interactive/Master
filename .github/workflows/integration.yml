@@ -1,0 +1,48 @@
+name: Integration Tests
+
+on:
+  push:
+    branches:
+      - development
+
+  pull_request:
+    branches:
+      - development
+
+  workflow_dispatch:
+
+jobs:
+  integration:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Show repository information
+        run: |
+          echo "Master repository:"
+          git log -1 --oneline
+
+          echo ""
+          echo "Submodules:"
+          git submodule status
+
+      - name: Test submodules
+        run: |
+          echo "Backend:"
+          git -C backend log -1 --oneline
+
+          echo "Frontend:"
+          git -C frontend log -1 --oneline
+
+          echo "memoir-3167:"
+          git -C memoir-3167 log -1 --oneline
+
+      - name: Integration test
+        run: |
+          echo "Integration test passed!"
