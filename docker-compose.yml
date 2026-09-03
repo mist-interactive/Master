@@ -53,10 +53,6 @@ services:
       - frontend_network
       - backend_network
 
-secrets:
-  jwt_public_key:
-    file: ./secrets/jwt_public.pem
-
 networks:
   frontend_network:
     name: frontend_network
