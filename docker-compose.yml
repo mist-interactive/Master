@@ -28,6 +28,8 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - base
+    secrets:
+      - jwt_public_key
     expose:
       - "6669"
     networks:
@@ -51,6 +53,9 @@ services:
       - frontend_network
       - backend_network
 
+secrets:
+  jwt_public_key:
+    file: ./secrets/jwt_public.pem
 
 networks:
   frontend_network:
