@@ -1,4 +1,4 @@
-include:
+indd do clude:
   - backend/docker-compose.yml
 
 services:
@@ -7,7 +7,7 @@ services:
     build:
       context: ./memoir-3167
       dockerfile: Dockerfile.base
- 
+
   frontend:
     build:
       context: ./frontend
@@ -30,6 +30,7 @@ services:
       - base
     secrets:
       - jwt_public_key
+      - internal_api_key
     expose:
       - "6669"
     networks:
