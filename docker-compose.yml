@@ -1,4 +1,4 @@
-indd do clude:
+include:
   - backend/docker-compose.yml
 
 services:
