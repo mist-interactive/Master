@@ -51,7 +51,7 @@ secrets:
 	@test -f "$(SECRETS_DIR)/jwt_public.pem" || \
 		openssl rsa -pubout -in "$(SECRETS_DIR)/jwt_private.pem" -out "$(SECRETS_DIR)/jwt_public.pem"
 	@test -f "$(SECRETS_DIR)/gameserver_api_key.txt" || \
-		openssl rand -hex 32 > "$(SECRETS_DIR)/gameserver_api_key.txt"
+		openssl rand -hex 10 > "$(SECRETS_DIR)/gameserver_api_key.txt"
 	@chmod 600 \
 		"$(SECRETS_DIR)/postgres_user_pw.txt" \
 		"$(SECRETS_DIR)/jwt_private.pem" \
