@@ -31,6 +31,8 @@ services:
     secrets:
       - jwt_public_key
       - internal_api_key
+    environment:
+      - BACKEND_PORT=${BACKEND_PORT:-8080}
     expose:
       - "6669"
     networks:
