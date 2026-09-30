@@ -1,33 +1,47 @@
-# Caddy automatically handles TLS certificates for this domain/host.
-# "localhost" gets a locally-trusted self-signed cert for dev;
-# swap this for real domain (e.g. game.example.com) in production —
-# Caddy will then request a real Let's Encrypt cert automatically.
-
-localhost:8443 {
-
-    # Default route: anything not matched below goes to the frontend.
-    # Serves the static site or Godot HTML5 export.
-    # "frontend" here is the Docker service name from frontend/docker-compose.yml —
-    # Caddy resolves it via Docker's internal DNS.
-
-    handle /* {
-        reverse_proxy frontend:5173
-    }
-
-    # Requests to /api/* go to the backend service (auth, matchmaking, etc).
-    # reverse_proxy forwards the request as-is and returns the response.
-
-    handle /api/* {
-        reverse_proxy go-server:8080
-    }
+{
+	# Fallback certificate for raw IP connections (which don't send SNI in ClientHello)
+	default_sni localhost
 }
 
-localhost:80 {
-    # Requests to /ws/* go to the Godot headless server.
-    # Caddy detects the "Upgrade: websocket" header automatically and
-    # proxies the WebSocket connection — no special config needed here,
-    # reverse_proxy handles both plain HTTP and WS the same way.
-    handle /ws* {
-        reverse_proxy memoir-3167:6669
-    }
+:8443 {
+	tls internal {
+		on_demand
+	}
+
+	# Don't expose the internal routes to the outside
+	handle /api/internal/* {
+		respond "Not Found" 404
+	}
+
+	# Dedicated WebSocket Hub microservice port
+	handle /api/ws {
+		reverse_proxy go-server:{$WS_PORT:8081}
+	}
+
+	# Requests to /api/* go to the backend service (auth, matchmaking, etc).
+	# reverse_proxy forwards the request as-is and returns the response.
+	handle /api/* {
+		reverse_proxy go-server:{$BACKEND_PORT:8080}
+	}
+
+	# Requests to /ws/* go to the Godot headless server.
+	# Caddy detects the "Upgrade: websocket" header automatically and
+	# proxies the WebSocket connection — no special config needed here,
+	# as Caddy handles WebSocket upgrades out of the box.
+	handle /ws* {
+		reverse_proxy memoir-3167:6669
+	}
+
+	# Default route: anything not matched above goes to the frontend.
+	# Serves the static site or Godot HTML5 export.
+	# "frontend" here is the Docker service name from docker-compose.yml —
+	# Caddy resolves it via Docker's internal DNS.
+	handle /* {
+		reverse_proxy frontend:5173
+	}
+}
+
+:80 {
+	# Unsecured traffic redirected to https above
+	redir https://{host}:8443{uri} permanent
 }
