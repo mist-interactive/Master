@@ -45,27 +45,27 @@ SECRETS_DIR := ./secrets
 secrets:
 	@mkdir -p "$(SECRETS_DIR)"
 	@test -f "$(SECRETS_DIR)/postgres_user_pw.txt" || \
-		openssl rand -hex 32 > "$(SECRETS_DIR)/postgres_user_pw.txt"
+		openssl rand -hex 10 > "$(SECRETS_DIR)/postgres_user_pw.txt"
 	@test -f "$(SECRETS_DIR)/jwt_private.pem" || \
 		openssl genpkey -algorithm RSA -out "$(SECRETS_DIR)/jwt_private.pem" -pkeyopt rsa_keygen_bits:2048
 	@test -f "$(SECRETS_DIR)/jwt_public.pem" || \
 		openssl rsa -pubout -in "$(SECRETS_DIR)/jwt_private.pem" -out "$(SECRETS_DIR)/jwt_public.pem"
 	@test -f "$(SECRETS_DIR)/gameserver_api_key.txt" || \
-		openssl rand -hex 10 > "$(SECRETS_DIR)/gameserver_api_key.txt"
+		openssl rand -hex 32 > "$(SECRETS_DIR)/gameserver_api_key.txt"
 	@chmod 600 \
 		"$(SECRETS_DIR)/postgres_user_pw.txt" \
 		"$(SECRETS_DIR)/jwt_private.pem" \
 		"$(SECRETS_DIR)/gameserver_api_key.txt"
 
 env:
-	@if [ ! -f backend/.env ]; then \
+	@if [ ! -f .env ]; then \
 		if [ -f .env.example ]; then \
-			cp .env.example backend/.env; \
-			echo "Created backend/.env from .env.example"; \
+			cp .env.example .env; \
+			echo "Created .env from .env.example"; \
 		else \
 			echo "Error: .env.example not found"; \
 			exit 1; \
 		fi \
 	else \
-		echo "backend/.env already exists"; \
+		echo ".env already exists"; \
 	fi
