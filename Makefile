@@ -58,9 +58,9 @@ secrets:
 		"$(SECRETS_DIR)/gameserver_api_key.txt"
 
 env:
-	@if [ ! -f .env ]; then \
-		if [ -f .env.example ]; then \
-			cp .env.example .env; \
+	@if [ ! -f backend/.env ]; then \
+		if [ -f backend/.env.example ]; then \
+			cp backend/.env.example backend/.env; \
 			echo "Created .env from .env.example"; \
 		else \
 			echo "Error: .env.example not found"; \
