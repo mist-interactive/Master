@@ -39,7 +39,10 @@ services:
       - backend_network
 
   caddy:
-    image: caddy:2
+    build:
+      context: .
+      dockerfile: Dockerfile.caddy
+    image: master-caddy:ratelimit
     ports:
       - "8080:80"
       - "8443:8443"
@@ -48,6 +51,7 @@ services:
       - WS_PORT=${WS_PORT:-8081}
     volumes:
       - ./Caddyfile:/etc/caddyfile
+      - ./frontend/public:/srv/public:ro
       - caddy_data:/data
       - caddy_config:/config
     command: caddy run --config /etc/caddyfile
