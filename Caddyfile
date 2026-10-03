@@ -1,0 +1,98 @@
+{
+	# Fallback certificate for raw IP connections (which don't send SNI in ClientHello)
+	default_sni localhost
+	#safety limits
+	servers {
+		timeouts {
+			read_body 10s
+			read_header 5s
+			write 30s
+			idle 2m
+		}
+		max_header_size 1MB
+	}
+	# Rate limiting handler ordering
+	order rate_limit before basicauth
+}
+
+:8443 {
+	tls internal {
+		on_demand
+	}
+
+	rate_limit {
+		zone global_zone {
+			key {remote_host}
+			events 100
+			window 5s
+		}
+		zone api_zone {
+			match {
+				path /api/*
+			}
+			key {remote_host}
+			events 30
+			window 5s
+		}
+	}
+
+	# Don't expose the internal routes to the outside
+	handle /api/internal/* {
+		respond "Not Found" 404
+	}
+
+	# Dedicated WebSocket Hub microservice port
+	handle /api/ws {
+		reverse_proxy go-server:{$WS_PORT:8081}
+	}
+
+	# Requests to /api/* go to the backend service (auth, matchmaking, etc).
+	# reverse_proxy forwards the request as-is and returns the response.
+	handle /api/* {
+		reverse_proxy go-server:{$BACKEND_PORT:8080} {
+			transport http {
+				dial_timeout 3s
+				response_header_timeout 15s
+				keepalive 30s
+				keepalive_idle_conns 50
+			}
+		}
+	}
+
+	# Requests to /ws/* go to the Godot headless server.
+	# Caddy detects the "Upgrade: websocket" header automatically and
+	# proxies the WebSocket connection — no special config needed here,
+	# as Caddy handles WebSocket upgrades out of the box.
+	handle /ws* {
+		reverse_proxy memoir-3167:6669
+	}
+
+	# Serve the large video directly from caddy to save internal roundtrips
+	handle /memoir-dummy-game-play.mp4 {
+		root * /srv/public
+		file_server
+	}
+
+	# Default route: anything not matched above goes to the frontend.
+	# Serves the static site or Godot HTML5 export.
+	# "frontend" here is the Docker service name from docker-compose.yml —
+	# Caddy resolves it via Docker's internal DNS.
+	handle /* {
+		reverse_proxy frontend:5173 {
+			# Buffer responses before sending to client to isolate upstream from client aborts
+			flush_interval -1
+			# safety limits on requests
+			transport http {
+				dial_timeout 3s
+				response_header_timeout 15s
+				keepalive 30s
+				keepalive_idle_conns 100
+			}
+		}
+	}
+}
+
+:80 {
+	# Unsecured traffic redirected to https above
+	redir https://{host}:8443{uri} permanent
+}
