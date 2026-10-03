@@ -83,7 +83,7 @@ flowchart TD
 
     subgraph Docker_Network["Docker Container Network"]
         Frontend["Frontend SPA (React 19 + TypeScript + Vite)"]
-        WASM["Godot 4.3 WebAssembly Client (Embedded iframe)"]
+        WASM["Godot 4.7.1 WebAssembly Client (Embedded iframe)"]
         AuthAPI["Go REST API & Auth Service (:8080)"]
         WSHub["Go WebSocket Hub Microservice (:8081)"]
         GodotServer["Headless Godot Game Server (:6669)"]
@@ -112,7 +112,7 @@ flowchart TD
   - _Why:_ Easy concurrency model via Goroutines, strict memory safety, and high-throughput network handling. Go's standard library provides robust HTTP multiplexing without heavy framework bloat.
 - **Database & ORM (PostgreSQL 16 + Bun ORM):**
   - _Why:_ Relational data integrity for user profiles, friendship relations, message logs, and match outcomes. Bun ORM provides type-safe query generation, migrations, and automated parameterization to prevent SQL injection.
-- **Game Engine (Godot 4.3 — Web Export & Headless Server):**
+- **Game Engine (Godot 4.7.1 — Web Export & Headless Server):**
   - _Why:_
 - **Edge & Ingress (Caddy 2):**
   - _Why:_ Automatic TLS certificate management, built-in rate-limiting plugin (`caddy-ratelimit`), transparent WebSocket upgrades, and single-port ingress isolating upstream services.
