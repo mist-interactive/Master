@@ -12,6 +12,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      target: ${FRONTEND_TARGET:-production}
     volumes:
       - ./frontend:/app
       - /app/node_modules
