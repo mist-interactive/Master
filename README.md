@@ -13,7 +13,7 @@ Beyond the game itself, the platform provides a complete social and competitive 
 - **Player profiles**: customizable profiles, avatar uploads, service badges/achievements, and match history.
 - **Global leaderboards** tracking win rates, and player experience points.
 
-Stack at a Glance: React 19 (TypeScript) frontend • Go 1.24 (Bun ORM) backend • Godot 4.3 (WASM & Headless) game client & server • PostgreSQL 16 database • Caddy 2 reverse proxy • Docker Compose
+Stack at a Glance: React 19 (TypeScript) frontend • Go 1.24 (Bun ORM) backend • Godot 4.7.1 (WASM & Headless) game client & server • PostgreSQL 16 database • Caddy 2 reverse proxy • Docker Compose
 
 ---
 
