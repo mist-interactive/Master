@@ -314,7 +314,7 @@ Total Points Claimed: **19 Points** (7 Major @ 2 pts + 5 Minor @ 1 pt) _(Subject
 - **Category:** Modules of Choice
 - **Description:** Strict server-authoritative netcode eliminating client-side tampering and desyncs.
 - **Implementation:** All game rules, card validations, legal unit movements, and dice rolls are executed exclusively on the headless Godot server. Web clients act strictly as interfaces for sending player intents and receiving authoritative game state diffs over binary WebSocket frames.
-- **Justification:** 
+- **Justification:** Without the server-authoritative model the game would have to be hosted by one of the players. With the player hosted model it would be easier for players to cheat because there would be no outside "source of truth" to validate the game state changes. The server-authoritative model also makes it possible for the players to reconnect in case of a disconnect and get the current state of the match. With the player hosted model, if the player hosting the match would get disconnected, reconnecting to the match would be impossible.
 
 ---
 
