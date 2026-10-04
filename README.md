@@ -69,6 +69,7 @@ The `Makefile` will automatically:
 - **Git submodules**: Three separate repos to work on frontend, backend, and game without conflicts, and a Master repo for interaction
 - **Version Control & Quality:** Team members followed a strict Git policy to ensure consistent format and quality. Git feature-branch workflow. All features developed on dedicated branches and merged to `main` strictly via GitHub Pull Requests after team code review and passing test suites.
 - **Task Tracking:** GitHub Projects board tracking backlog issues, active work in progress.
+- **Communication channels:** Discord
 
 ---
 
@@ -114,6 +115,8 @@ flowchart TD
   - _Why:_ Relational data integrity for user profiles, friendship relations, message logs, and match outcomes. Bun ORM provides type-safe query generation, migrations, and automated parameterization to prevent SQL injection.
 - **Game Engine (Godot 4.7.1 — Web Export & Headless Server):**
   - _Why:_ We chose to develop our game in a game engine so that we can focus on game features rather than building the whole architecture ourselves. Godot was chosen as game engine because of it's light weight and networking features. Godot web builds are significantly smaller than e.g. Unity's web builds. Both the headless server and the client were developed in Godot to make client and server communication as seamless as possible and make local testing easier.
+- **Hex Strategy Map (Turn-Based Strategy Toolkit for Godot 4.6+):**
+  - _Why:_ Hex Strategy Map gave us the basic tools for creating a hex based strategy game by offering functions and pure data representations of data structures for such crucial functionalities as path-finding, hex-grid management and data serialization. Most features were either modified or extended during the development.
 - **Edge & Ingress (Caddy 2):**
   - _Why:_ Automatic TLS certificate management, built-in rate-limiting plugin (`caddy-ratelimit`), transparent WebSocket upgrades, and single-port ingress isolating upstream services.
 
