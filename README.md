@@ -377,4 +377,5 @@ In accordance with 42 School guidelines, AI tools were utilized during developme
 ### Zak (`zfarah`)
 
 - _Role:_ Technical Lead / Netcode Lead
-- _Contributions:_
+- _Contributions:_ Architected and implemented a **server-authoritative multiplayer architecture**, with the server running core game logic, acting as the single source of truth, and managing multiple concurrent matches. Implemented client-server communication and real-time state synchronization, including robust handling of latency, disconnections, and reconnections.
+
