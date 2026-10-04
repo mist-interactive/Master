@@ -364,8 +364,8 @@ In accordance with 42 School guidelines, AI tools were utilized during developme
 
 ### Usva (`jpelline`)
 
-- _Role:_ DevOps Lead / Game Developer
-- _Contributions:_
+* _Role:_ DevOps Lead / Game Developer
+* _Contributions:_ Designed and implemented the **card, deck, and hand management systems**, including card drawing, holding, playing, and deck-to-hand interactions. Contributed to **core game logic**, as well as the **3D dice system** and gameplay interactions. Implemented **client-side JWT loading and verification**, fully built the game's **UI/UX**, and managed the project's **development and deployment infrastructure**.
 
 ### Niklas (`nraatika`)
 
