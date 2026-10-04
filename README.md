@@ -60,7 +60,7 @@ The `Makefile` will automatically:
 | **Usva**   | `jpelline` | DevOps Lead / Game Developer    | Game client                                                    |
 | **Niklas** | `nraatika` | Backend & Database Lead         | Go REST API, WebSocket hub, Bun ORM, schema, JWT auth, testing |
 | **Miika**  | `mhirvasm` | Project Manager / Frontend Lead | React frontend, UI/UX, chat/friends UI, state management       |
-| **Zak**    | `zfarah`   | Technical Lead / Game Developer | Godot headless game server                                     |
+| **Zak**    | `zfarah`   | Technical Lead, Netcode & Game Developer | Godot headless game server                                     |
 
 ### Project Management Methodology
 
