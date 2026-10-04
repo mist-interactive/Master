@@ -1,0 +1,77 @@
+include:
+  - backend/docker-compose.yml
+
+services:
+  base:
+    image: game/base-img
+    build:
+      context: ./memoir-3167
+      dockerfile: Dockerfile.base
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: ${FRONTEND_TARGET:-production}
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - frontend_network
+    depends_on:
+      - base
+    expose:
+      - "5173"
+
+  memoir-3167:
+    build:
+      context: ./memoir-3167
+      dockerfile: Dockerfile
+    depends_on:
+      - base
+    secrets:
+      - jwt_public_key
+      - internal_api_key
+    environment:
+      - BACKEND_PORT=${BACKEND_PORT:-8080}
+    expose:
+      - "6669"
+    networks:
+      - backend_network
+
+  caddy:
+    build:
+      context: .
+      dockerfile: Dockerfile.caddy
+    image: master-caddy:ratelimit
+    ports:
+      - "8080:80"
+      - "8443:8443"
+    environment:
+      - BACKEND_PORT=${BACKEND_PORT:-8080}
+      - WS_PORT=${WS_PORT:-8081}
+    volumes:
+      - ./Caddyfile:/etc/caddyfile
+      - ./frontend/public:/srv/public:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    command: caddy run --config /etc/caddyfile
+    depends_on:
+      - frontend
+      - go-server
+      - memoir-3167
+    networks:
+      - frontend_network
+      - backend_network
+
+networks:
+  frontend_network:
+    name: frontend_network
+    driver: bridge
+  backend_network:
+    name: backend_network
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:
