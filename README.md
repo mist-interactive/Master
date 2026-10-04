@@ -1,4 +1,4 @@
-_This project has been created as part of the 42 curriculum by apollane, jpelline, mhirvasm, nraatika, and zfarah._
+_This project has been created as part of the 42 curriculum by anpollan, jpelline, mhirvasm, nraatika, and zfarah._
 
 # Memoir 3167 — ft_transcendence
 
@@ -6,6 +6,7 @@ _This project has been created as part of the 42 curriculum by apollane, jpellin
 
 **Memoir 3167** is a full-stack, web-based tactical strategy game built for the **42 network ft_transcendence** project. Inspired by the tabletop boardgame Memoir '44, players draft command cards, maneuver armor, infantry and artillery units across a hexagonal grid, and resolve real-time tactical combat with dice rolls.
 
+\
 Beyond the game itself, the platform provides a complete social and competitive ecosystem:
 
 - **User authentication**: username/password sign-in, JWT and session cookie authentication.
@@ -13,7 +14,8 @@ Beyond the game itself, the platform provides a complete social and competitive 
 - **Player profiles**: customizable profiles, avatar uploads, service badges/achievements, and match history.
 - **Global leaderboards** tracking win rates, and player experience points.
 
-Stack at a Glance: React 19 (TypeScript) frontend • Go 1.24 (Bun ORM) backend • Godot 4.7.1 (WASM & Headless) game client & server • PostgreSQL 16 database • Caddy 2 reverse proxy • Docker Compose
+\
+**Stack at a Glance**: React 19 (TypeScript) frontend • Go 1.24 (Bun ORM) backend • Godot 4.7.1 (WASM & Headless) game client & server • PostgreSQL 16 database • Caddy 2 reverse proxy • Docker Compose
 
 ---
 
@@ -45,8 +47,6 @@ The `Makefile` will automatically:
 | Service                         | Address                          | Description                                        |
 | :------------------------------ | :------------------------------- | :------------------------------------------------- |
 | **Web Application (HTTPS)**     | `https://localhost:8443`         | Main frontend portal & Godot WASM client           |
-| **HTTP Redirect / Certificate** | `http://localhost:8080`          | Redirects to HTTPS; serves root CA certificate     |
-| **Caddy Local CA Certificate**  | `http://localhost:8080/root.crt` | Direct download of Caddy root CA for browser trust |
 
 ---
 
@@ -56,7 +56,7 @@ The `Makefile` will automatically:
 
 | Name       | 42 Intra   | Project Role                    | Core Responsibilities                                          |
 | :--------- | :--------- | :------------------------------ | :------------------------------------------------------------- |
-| **Antti**  | `apollane` | Product Owner / Game Developer  | Game client                                                    |
+| **Antti**  | `anpollan` | Product Owner / Game Developer  | Game client                                                    |
 | **Usva**   | `jpelline` | DevOps Lead / Game Developer    | Game client                                                    |
 | **Niklas** | `nraatika` | Backend & Database Lead         | Go REST API, WebSocket hub, Bun ORM, schema, JWT auth, testing |
 | **Miika**  | `mhirvasm` | Project Manager / Frontend Lead | React frontend, UI/UX, chat/friends UI, state management       |
@@ -65,9 +65,9 @@ The `Makefile` will automatically:
 ### Project Management Methodology
 
 - **Workflow:** Agile framework with 2-week development sprints and defined milestone checkpoints.
-- **Sprint Syncs:** Weekly standup meetings held in person and/or on Discord to coordinate cross-container integration.
+- **Sprint Syncs:** Weekly standup meetings held in person and/or on Discord to coordinate cross-container integration. The meeting spokesperson and secretary roles were rotated on a weekly basis.
 - **Git submodules**: Three separate repos to work on frontend, backend, and game without conflicts, and a Master repo for interaction
-- **Version Control & Quality:** Git feature-branch workflow. All features developed on dedicated branches and merged to `main` strictly via GitHub Pull Requests after team code review and passing test suites.
+- **Version Control & Quality:** Team members followed a strict Git policy to ensure consistent format and quality. Git feature-branch workflow. All features developed on dedicated branches and merged to `main` strictly via GitHub Pull Requests after team code review and passing test suites.
 - **Task Tracking:** GitHub Projects board tracking backlog issues, active work in progress.
 
 ---
@@ -101,19 +101,19 @@ flowchart TD
 
     WSHub -->|Internal REST API :8080 (X-API-Key)| AuthAPI
     AuthAPI -->|SQL Queries (Bun ORM)| DB
-    GodotServer -->|Report Match Results :8080 (X-API-Key)| AuthAPI
+    GodotServer -->|Report Match Results, Match heartbeat :8080 (X-API-Key) | AuthAPI
 ```
 
 ### Technology Breakdown & Justifications
 
 - **Frontend (React 19, TypeScript, Vite, Tailwind CSS, Bun):**
-  - _Why:_
+  - _Why:_ Single-Page Application (SPA) architecture ensures persistent WebSocket connections during route navigation. TypeScript enforces strict type safety, Vite and Bun deliver ultra-fast builds and Hot Module Replacement (HMR), and Tailwind CSS prevents CSS specificity conflicts with utility-first styling.
 - **Backend (Go 1.24, `net/http`, Bun ORM, Gorilla WebSocket):**
   - _Why:_ Easy concurrency model via Goroutines, strict memory safety, and high-throughput network handling. Go's standard library provides robust HTTP multiplexing without heavy framework bloat.
 - **Database & ORM (PostgreSQL 16 + Bun ORM):**
   - _Why:_ Relational data integrity for user profiles, friendship relations, message logs, and match outcomes. Bun ORM provides type-safe query generation, migrations, and automated parameterization to prevent SQL injection.
 - **Game Engine (Godot 4.7.1 — Web Export & Headless Server):**
-  - _Why:_
+  - _Why:_ We chose to develop our game in a game engine so that we can focus on game features rather than building the whole architecture ourselves. Godot was chosen as game engine because of it's light weight and networking features. Godot web builds are significantly smaller than e.g. Unity's web builds. Both the headless server and the client were developed in Godot to make client and server communication as seamless as possible and make local testing easier.
 - **Edge & Ingress (Caddy 2):**
   - _Why:_ Automatic TLS certificate management, built-in rate-limiting plugin (`caddy-ratelimit`), transparent WebSocket upgrades, and single-port ingress isolating upstream services.
 
@@ -258,13 +258,13 @@ Total Points Claimed: **19 Points** (7 Major @ 2 pts + 5 Minor @ 1 pt) _(Subject
 
 - **Category:** Gaming and user experience
 - **Description:** A full-featured tactical hex-grid wargame (**Memoir 3167**) where two players compete head-to-head.
-- **Implementation:** Players maneuver infantry, mechanized armor, and artillery across an interactive hexagonal battlefield, playing tactical command cards to issue orders, resolving ranged/close combat via dice mechanics, and securing victory through destroying opponent units.
+- **Implementation:** A multiplayer game with separate clients and a dedicated server-authoritative server that can run multiple concurrent matches. Clients connect to the server over web sockets and the syncing is handled by RPC calls through which the server is sending the current state of the game to clients. All of the critical gameplay logic is handled by the server to restrict the players from cheating.
 
 #### 5. Remote players — Enable two players on separate computers to play in real-time (Major — 2 pts)
 
 - **Category:** Gaming and user experience
 - **Description:** Synchronized online multiplayer across separate devices over the network.
-- **Implementation:** Players challenge friends via the frontend interface. Incorporates a 30-second disconnection grace period, mid-match reconnection state recovery, and automated sweep of abandoned matches.
+- **Implementation:** The game server Players challenge friends via the frontend interface. The players are connected to the server over web sockects. The server incorporates a 30-second disconnection grace period, mid-match reconnection state recovery, and automated sweep of abandoned matches.
 
 #### 6. Backend as microservices (Major — 2 pts)
 
@@ -282,7 +282,8 @@ Total Points Claimed: **19 Points** (7 Major @ 2 pts + 5 Minor @ 1 pt) _(Subject
 
 - **Category:** Modules of Choice
 - **Description:** Integration of the Godot game engine into a modern containerized web stack.
-- **Implementation & Challenges:** Compiling Godot client exports into WebAssembly/HTML5, bridging JWT authentication and match IDs via secure `postMessage` handlers, and containerizing a headless Linux Godot binary running natively on the server.
+- **Implementation:** Godot game clients are exported into WebAssembly/HTML5, bridging JWT authentication and match IDs via secure `postMessage` handlers, and containerizing a headless Linux Godot binary running natively on the server.
+- **Justification:** Building our game in Godot allowed us to take the game development and features a lot further than building the game from scratch in pure code. In games industry it's a standard to use either publicly accessible game engines(e.g. Godot, Unity or Unreal Engine) or proprietary game engines when developing games and we wanted to get experience in working with such engines.
 
 #### 8. Use a frontend framework — React (Minor — 1 pt)
 
@@ -312,7 +313,8 @@ Total Points Claimed: **19 Points** (7 Major @ 2 pts + 5 Minor @ 1 pt) _(Subject
 
 - **Category:** Modules of Choice
 - **Description:** Strict server-authoritative netcode eliminating client-side tampering and desyncs.
-- **Implementation:** All game rules, card validations, legal unit movements, and dice rolls are executed exclusively on the headless Godot server. Web clients act strictly as thin rendering interfaces sending player intents and receiving authoritative game state diffs over binary WebSocket frames.
+- **Implementation:** All game rules, card validations, legal unit movements, and dice rolls are executed exclusively on the headless Godot server. Web clients act strictly as interfaces for sending player intents and receiving authoritative game state diffs over binary WebSocket frames.
+- **Justification:** 
 
 ---
 
@@ -338,6 +340,7 @@ Total Points Claimed: **19 Points** (7 Major @ 2 pts + 5 Minor @ 1 pt) _(Subject
 - [Go Documentation & Standard Library](https://golang.org/doc/)
 - [Bun ORM Documentation](https://bun.uptrace.dev/)
 - [Caddy Server Documentation](https://caddyserver.com/docs/)
+- [Godot Documentation](https://docs.godotengine.org/en/stable/index.html)
 
 ### Explicit Disclosure of AI Usage (42 Requirement)
 
@@ -354,10 +357,10 @@ In accordance with 42 School guidelines, AI tools were utilized during developme
 
 ## 9. Individual Contributions
 
-### Antti (`apollane`)
+### Antti (`anpollan`)
 
 - _Role:_ Product Owner / Game Developer
-- _Contributions:_
+- _Contributions:_ Architected the client-side gameplay systems, phase-driven state machine, and hex-grid tactical mechanics in Godot. Implemented client-side pathfinding, Line of Sight and range highlighting, combat resolution sequences and interactive camera controls. Defined core game rules, unit statistics, and milestone priorities to align implementation with Memoir '44 mechanics.
 
 ### Usva (`jpelline`)
 
@@ -372,10 +375,9 @@ In accordance with 42 School guidelines, AI tools were utilized during developme
 ### Miika (`mhirvasm`)
 
 - _Role:_ Project Manager / Frontend Lead
-- _Contributions:_
+- _Contributions:_ Designed the SPA frontend and its global state architecture to guarantee persistent, application-wide WebSocket connectivity without redundant renders. Implemented the dual-token JWT authentication flow, resilient WebSocket reconnection logic, and managed the secure Godot WebAssembly iframe integration for memory isolation. Drove project management by establishing GitHub Project boards, repository policies, and milestone tracking systems to monitor and organize development progress.
 
 ### Zak (`zfarah`)
 
 - _Role:_ Technical Lead / Netcode Lead
 - _Contributions:_ Architected and implemented a **server-authoritative multiplayer architecture**, with the server running core game logic, acting as the single source of truth, and managing multiple concurrent matches. Implemented client-server communication and real-time state synchronization, including robust handling of latency, disconnections, and reconnections.
-
