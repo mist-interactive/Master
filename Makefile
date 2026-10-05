@@ -1,12 +1,12 @@
 .PHONY: all build up down stop start clean fclean re status logs env secrets
 
-all: up
+all: build up
 
-build:
+build: secrets env
 	@docker-compose build base go-server caddy
 	@docker-compose build frontend memoir-3167
 
-up: secrets env build
+up: secrets env
 	@docker-compose up -d
 
 down:
